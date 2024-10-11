@@ -23,34 +23,33 @@ public class go {
     // Main method
         public static void main(String[] args) throws Exception {
 
-            while(true){
+        while(true){
+             // Time to create the Scanner object
+            Scanner myObj = new Scanner(System.in);
 
-                // Time to create the Scanner object
-                Scanner myObj = new Scanner(System.in);
+            // Ask for user input:
+            System.out.println("Enter the x and y coordinates of your move: (Must be between 0 and 8) ");
+            int moveX = myObj.nextInt();
+            int moveY = myObj.nextInt();
+            
+            // Set the move on the board:
+            goBoard[moveX][moveY] = "-o";
 
-                // Ask for user input:
-                System.out.println("Enter the x and y coordinates of your move: (Must be between 0 and 8) ");
-                int moveX = myObj.nextInt();
-                int moveY = myObj.nextInt();
-                
-                // Set the move on the board:
-                goBoard[moveX][moveY] = "-o";
+            // Set the opponent's move on the board:
+            System.out.println("Enter the x and y coordinates of your opponent's move: (Must be between 0 and 8)");
+            int opponentMoveX = myObj.nextInt();
+            int opponentMoveY = myObj.nextInt();
 
-                // Set the opponent's move on the board:
-                System.out.println("Enter the x and y coordinates of your opponent's move: (Must be between 0 and 8)");
-                int opponentMoveX = myObj.nextInt();
-                int opponentMoveY = myObj.nextInt();
+            // Set the opponent's move on the board:
+            goBoard[opponentMoveX][opponentMoveY] = "-*";
+                //TODO - Create a way for the opponent to make their own move without player inputs
 
-                // Set the opponent's move on the board:
-                goBoard[opponentMoveX][opponentMoveY] = "-*";
-                    //TODO - Create a way for the opponent to make their own move without player inputs
-
-                // Verify that the move is valid:
-                    if(goBoard[moveX][moveY] == "-o" || goBoard[opponentMoveX][opponentMoveY] == "-*"){
-                    System.out.println("Invalid Move");
+            // Verify that the move is valid:
+                if(goBoard[moveX][moveY] == "-o" || goBoard[opponentMoveX][opponentMoveY] == "-*"){
+                System.out.println("Invalid Move");
                 }
 
-                // Detects if a stone is out of bounds
+            // Detects if a stone is out of bounds
             for (int i = 0; i < goBoard.length; i++){
                 for (int j = 0; j < goBoard[i].length; j++){
                     if(goBoard[i][j] == "-o" || goBoard[i][j] == "-*"){
@@ -60,16 +59,15 @@ public class go {
                     }
                 }
             }
-            
-                // Prints the numbers on top of the board
-                System.out.println(" 1 2 3 4 5 6 7 8 9");
 
-                // Actually prints the board
-                for (int i = 0; i < goBoard.length; i++){
+            // Prints the numbers on top of the board
+            System.out.println(" 1 2 3 4 5 6 7 8 9");
 
-                    //Vertical numbers get printed
-                    System.out.print(i+1);
-                
+            // Actually prints the board
+            for (int i = 0; i < goBoard.length; i++){
+
+                //Vertical numbers get printed
+                System.out.print(i+1);
                     for (int j = 0; j < goBoard[i].length; j++){
                         if(goBoard[i][j] == null){
                             if(j == 0){
@@ -84,9 +82,8 @@ public class go {
                         }
                     }
                     System.out.println();
-                }
-        
             }
+        }
     }
 }
 // Expected Output:
