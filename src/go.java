@@ -5,6 +5,7 @@
 //-------------------
 // Task:
 // Create a simple game of Go
+//TODO Write comments to explain all the code bits that are not self-explanatory
 
 import java.util.Scanner;
 public class go {
@@ -18,7 +19,7 @@ public class go {
         while(true){
 
             // Print the board
-            System.out.println(" 1 2 3 4 5 6 7 8 9"); // print the column numbers
+            System.out.println(" 1 2 3 4 5 6 7 8 9"); // Print the column numbers
             for (int i = 0; i < goBoard.length; i++){
                 System.out.print(i+1);
                 for (int j = 0; j < goBoard[i].length; j++){
@@ -98,14 +99,18 @@ public class go {
     }
 
 //------------------------------------------------------------------------------------------------
+// Excess of comments are for a few reasons
+// 1. To make the code more readable
+// 2. To make the code more understandable
+// 3. To make the code more maintainable
 
     // Method for score keeping:
     public static int calculateScore(String[][] board, String playerStone) {
-        int score = 0;
-        for (int i = 0; i < board.length; i++){
-            for (int j = 0; j < board[i].length; j++){
-                if(board[i][j] == playerStone){
-                    score++;
+        int score = 0; // Initialize the score
+        for (int i = 0; i < board.length; i++){ // Loop through the board
+            for (int j = 0; j < board[i].length; j++){ // Loop through the board...again
+                if(board[i][j] == playerStone){ // If the stone is the player's stone
+                    score++; // Increment the score
                 }
             }
         }
@@ -113,68 +118,68 @@ public class go {
     }
 
     // Method to calculate the territory
-    public static int calculateTerritory(String[][] board, String playerStone) {
-        boolean[][] visited = new boolean[board.length][board[0].length];
-        int territory = 0;
-        for (int i = 0; i < board.length; i++) {
-            for (int j = 0; j < board[i].length; j++) {
-                if (board[i][j] == null && !visited[i][j]) {
-                    int[] result = exploreTerritory(board, i, j, playerStone, visited);
-                    if (result[1] == 1) {
-                        territory += result[0];
+    public static int calculateTerritory(String[][] board, String playerStone) { // Calculate the territory
+        boolean[][] visited = new boolean[board.length][board[0].length]; // Create a visited array
+        int territory = 0; // Initialize the territory
+        for (int i = 0; i < board.length; i++) { // Loop through the board
+            for (int j = 0; j < board[i].length; j++) { // Loop through the board...again
+                if (board[i][j] == null && !visited[i][j]) { // If the space is empty and not visited
+                    int[] result = exploreTerritory(board, i, j, playerStone, visited); // Explore the territory
+                    if (result[1] == 1) { // If the territory is owned by the player
+                        territory += result[0]; // Increment the territory
                     }
                 }
             }
         }
-        return territory;
+        return territory; // Return the territory
     }
 
     // Method to explore a territory
-    public static int[] exploreTerritory(String[][] board, int x, int y, String playerStone, boolean[][] visited) {
-        if (x < 0 || x >= board.length || y < 0 || y >= board[0].length || visited[x][y]) {
-            return new int[]{0, 1};
+    public static int[] exploreTerritory(String[][] board, int x, int y, String playerStone, boolean[][] visited) { // Explore the territory
+        if (x < 0 || x >= board.length || y < 0 || y >= board[0].length || visited[x][y]) { // If the point is out of bounds or visited
+            return new int[]{0, 1}; // Return 0 territory and 1 ownership
         }
-        visited[x][y] = true;
-        if (board[x][y] != null) {
-            return new int[]{0, board[x][y].equals(playerStone) ? 1 : -1};
+        visited[x][y] = true; // Mark the point as visited
+        if (board[x][y] != null) { // If the point is not empty
+            return new int[]{0, board[x][y].equals(playerStone) ? 1 : -1}; // Return 0 territory and ownership based on the stone
         }
-        int[] up = exploreTerritory(board, x - 1, y, playerStone, visited);
-        int[] down = exploreTerritory(board, x + 1, y, playerStone, visited);
-        int[] left = exploreTerritory(board, x, y - 1, playerStone, visited);
-        int[] right = exploreTerritory(board, x, y + 1, playerStone, visited);
-        int territory = 1 + up[0] + down[0] + left[0] + right[0];
-        int ownership = up[1] == down[1] && down[1] == left[1] && left[1] == right[1] ? up[1] : 0;
-        return new int[]{territory, ownership};
+        int[] up = exploreTerritory(board, x - 1, y, playerStone, visited); // Explore the territory up
+        int[] down = exploreTerritory(board, x + 1, y, playerStone, visited); // Explore the territory down
+        int[] left = exploreTerritory(board, x, y - 1, playerStone, visited); // Explore the territory left
+        int[] right = exploreTerritory(board, x, y + 1, playerStone, visited); // Explore the territory right
+        int territory = 1 + up[0] + down[0] + left[0] + right[0]; // Calculate the territory
+        int ownership = up[1] == down[1] && down[1] == left[1] && left[1] == right[1] ? up[1] : 0; // Calculate the ownership
+        return new int[]{territory, ownership}; // Return the territory and ownership
     }
 
     // Method to check if a group of stones has any liberties:
-    public static boolean hasLiberties(String[][] board, int x, int y, String stone, boolean[][] visited) {
-        if (x < 0 || x >= board.length || y < 0 || y >= board[0].length) {
+    public static boolean hasLiberties(String[][] board, int x, int y, String stone, boolean[][] visited) { // Check if a group of stones has liberties
+        if (x < 0 || x >= board.length || y < 0 || y >= board[0].length) { // If the point is out of bounds, don't let a player place a piece there
             return false;
         }
-        if (board[x][y] == null) {
+        if (board[x][y] == null) { // If the point is empty, let a player place a stone there
             return true;
         }
-        if (visited[x][y] || !board[x][y].equals(stone)) {
+        if (visited[x][y] || !board[x][y].equals(stone)) { // If the point is visited or not the player's stone, don't let a player place a piece there
             return false;
         }
-        visited[x][y] = true;
-        return  hasLiberties(board, x + 1, y, stone, visited) ||
-                hasLiberties(board, x - 1, y, stone, visited) ||
-                hasLiberties(board, x, y + 1, stone, visited) ||
-                hasLiberties(board, x, y - 1, stone, visited);
+        visited[x][y] = true; // Mark the point as visited
+        return  hasLiberties(board, x + 1, y, stone, visited) || // Check for liberties up
+                hasLiberties(board, x - 1, y, stone, visited) || // Check for liberties down
+                hasLiberties(board, x, y + 1, stone, visited) || // Check for liberties left
+                hasLiberties(board, x, y - 1, stone, visited);   // Check for liberties right
     }
 
     // Method for capturing stones:
     public static int captureStones(String[][] board, String opponentStone) {
-        int capturedStones = 0;
-        for (int i = 0; i < board.length; i++){
-            for (int j = 0; j < board[i].length; j++){
-                if(board[i][j] == opponentStone){
-                    boolean[][] visited = new boolean[board.length][board[0].length];
-                    if (!hasLiberties(board, i, j, opponentStone, visited)) {
-                        board[i][j] = null;
-                        capturedStones++;
+        int capturedStones = 0; // Initialize the captured stones
+        for (int i = 0; i < board.length; i++){ // Loop through the board
+            for (int j = 0; j < board[i].length; j++){ // Loop through the board...again
+                if(board[i][j] == opponentStone){ // If the stone is the opponent's stone
+                    boolean[][] visited = new boolean[board.length][board[0].length]; // Create a visited array
+                    if (!hasLiberties(board, i, j, opponentStone, visited)) { // If the group of stones has no liberties
+                        board[i][j] = null; // Remove the stone
+                        capturedStones++; // Increment the captured stones
                     }
                 }
             }
@@ -184,21 +189,22 @@ public class go {
 
     // Method for removing stones from the board:
     public static int removeStones(String[][] board, int x, int y, String stone) {
+        // If the point is out of bounds or empty or not the player's stone, return 0
         if (x < 0 || x >= board.length || y < 0 || y >= board[0].length || board[x][y] == null || !board[x][y].equals(stone)) {
             return 0;
         }
-        board[x][y] = null;
-        return 1  + removeStones(board, x + 1, y, stone) +
-                    removeStones(board, x - 1, y, stone) +
-                    removeStones(board, x, y + 1, stone) +
-                    removeStones(board, x, y - 1, stone);
+        board[x][y] = null; // Remove the stone
+        return 1  + removeStones(board, x + 1, y, stone) + // Remove the stone up
+                    removeStones(board, x - 1, y, stone) + // Remove the stone down
+                    removeStones(board, x, y + 1, stone) + // Remove the stone left
+                    removeStones(board, x, y - 1, stone);  // Remove the stone right
     }
     
     // Method to clone the board state
     public static void cloneBoard(String[][] source, String[][] destination) {
-        for (int i = 0; i < source.length; i++) {
-            for (int j = 0; j < source[i].length; j++) {
-                destination[i][j] = source[i][j];
+        for (int i = 0; i < source.length; i++) { // Loop through the board
+            for (int j = 0; j < source[i].length; j++) { // Loop through the board...again
+                destination[i][j] = source[i][j]; // Clone the board
             }
         }
     }
@@ -208,22 +214,22 @@ public class go {
 
     // Method to check if a point is an eye
     public static boolean isEye(String[][] board, int x, int y, String playerStone) {
-        if (board[x][y] != null) {
+        if (board[x][y] != null) { // If a cell is not empty, flag it as
             return false;
         }
-        boolean isEye = true;
-        if (x > 0 && !board[x - 1][y].equals(playerStone)) isEye = false;
-        if (x < board.length - 1 && !board[x + 1][y].equals(playerStone)) isEye = false;
-        if (y > 0 && !board[x][y - 1].equals(playerStone)) isEye = false;
-        if (y < board[0].length - 1 && !board[x][y + 1].equals(playerStone)) isEye = false;
+        boolean isEye = true; // Initialize the "eye"
+        if (x > 0 && !board[x - 1][y].equals(playerStone)) isEye = false; // Check for the player's stone up
+        if (x < board.length - 1 && !board[x + 1][y].equals(playerStone)) isEye = false; // Check for the player's stone down
+        if (y > 0 && !board[x][y - 1].equals(playerStone)) isEye = false; // Check for the player's stone left
+        if (y < board[0].length - 1 && !board[x][y + 1].equals(playerStone)) isEye = false; // Check for the player's stone right
         return isEye;
     }
 
     // Method to check for ko
     public static boolean isKo(String[][] currentBoard, String[][] previousBoard) {
-        for (int i = 0; i < currentBoard.length; i++) {
-            for (int j = 0; j < currentBoard[i].length; j++) {
-                if (currentBoard[i][j] != previousBoard[i][j]) {
+        for (int i = 0; i < currentBoard.length; i++) { // Loop through the board
+            for (int j = 0; j < currentBoard[i].length; j++) { // Loop through the board...again
+                if (currentBoard[i][j] != previousBoard[i][j]) { // If the current board is different from the previous board, return false
                     return false;
                 }
             }
@@ -233,12 +239,12 @@ public class go {
 
     // Method to check for seki
     public static boolean isSeki(String[][] board, String playerStone, String opponentStone) {
-        boolean[][] visited = new boolean[board.length][board[0].length];
-        for (int i = 0; i < board.length; i++) {
-            for (int j = 0; j < board[i].length; j++) {
-                if (board[i][j] != null && board[i][j].equals(playerStone)) {
-                    if (hasSharedLiberties(board, i, j, playerStone, opponentStone, visited)) {
-                        return true;
+        boolean[][] visited = new boolean[board.length][board[0].length]; // Create a visited array
+        for (int i = 0; i < board.length; i++) { // Loop through the board
+            for (int j = 0; j < board[i].length; j++) { // Loop through the board...again
+                if (board[i][j] != null && board[i][j].equals(playerStone)) { // If the cell is not empty and is the player's stone
+                    if (hasSharedLiberties(board, i, j, playerStone, opponentStone, visited)) { // If the group of stones has shared liberties with the opponent
+                        return true; // it is Seki!
                     }
                 }
             }
@@ -248,23 +254,23 @@ public class go {
     
     // Method to check if a group has shared liberties with the opponent
     public static boolean hasSharedLiberties(String[][] board, int x, int y, String playerStone, String opponentStone, boolean[][] visited) {
-        if (x < 0 || x >= board.length || y < 0 || y >= board[0].length) {
+        if (x < 0 || x >= board.length || y < 0 || y >= board[0].length) { // If the liberty is out of bounds, then discount it
             return false;
         }
-        if (visited[x][y]) {
+        if (visited[x][y]) { // If the liberty is visited, then discount it
             return false;
         }
         visited[x][y] = true;
-        if (board[x][y] == null) {
+        if (board[x][y] == null) { // If the liberty is empty, then it is a shared liberty
             return true;
         }
-        if (board[x][y].equals(opponentStone)) {
+        if (board[x][y].equals(opponentStone)) { // If the liberty is the opponent's stone, then discount it
             return false;
         }
-        return  hasSharedLiberties(board, x + 1, y, playerStone, opponentStone, visited) ||
-                hasSharedLiberties(board, x - 1, y, playerStone, opponentStone, visited) ||
-                hasSharedLiberties(board, x, y + 1, playerStone, opponentStone, visited) ||
-                hasSharedLiberties(board, x, y - 1, playerStone, opponentStone, visited);
+        return  hasSharedLiberties(board, x + 1, y, playerStone, opponentStone, visited) || // Check for shared liberties up
+                hasSharedLiberties(board, x - 1, y, playerStone, opponentStone, visited) || // Check for shared liberties down
+                hasSharedLiberties(board, x, y + 1, playerStone, opponentStone, visited) || // Check for shared liberties left
+                hasSharedLiberties(board, x, y - 1, playerStone, opponentStone, visited);   // Check for shared liberties right
     }
 }
 //------------------------------------------------------------------------------------------------
