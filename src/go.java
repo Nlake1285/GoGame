@@ -5,7 +5,6 @@
 //-------------------
 // Task:
 // Create a simple game of Go
-//TODO Write comments to explain all the code bits that are not self-explanatory
 
 import java.util.Scanner;
 public class go {
